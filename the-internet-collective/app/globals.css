@@ -1,8 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Colour Palette ────────────────────────────────────── */
+  --color-bg: #0a0a0a;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  --color-footer-bg: #e63312;
+  --color-footer-text: #ffffff;
+  --color-card-bg: #111111;
+
+  /* ── Typography ────────────────────────────────────────── */
+  --font-headline: var(--font-geist-sans), "Inter", system-ui, sans-serif;
+  --font-body: var(--font-geist-sans), "Inter", system-ui, sans-serif;
+  --headline-size: clamp(3rem, 7vw, 8rem);
+  --headline-weight: 700;
+  --headline-color: #ffffff;
+  --subheading-size: clamp(1rem, 2vw, 1.5rem);
+  --subheading-color: rgba(255, 255, 255, 0.7);
+
+  /* ── Scroll ────────────────────────────────────────────── */
+  --lenis-duration: 1.2;
+
+  /* ── Cards ─────────────────────────────────────────────── */
+  --card-entry-rotation: -5deg;
+  --card-scrub-speed: 1;
+
+  /* ── Tailwind overrides ────────────────────────────────── */
+  --background: #0a0a0a;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -12,15 +37,49 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Global Reset ──────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Selection ─────────────────────────────────────────── */
+::selection {
+  background: rgba(230, 51, 18, 0.4);
+  color: #ffffff;
+}
+
+/* ── Scrollbar (subtle) ────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
