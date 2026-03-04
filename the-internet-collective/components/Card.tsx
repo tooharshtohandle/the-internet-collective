@@ -47,7 +47,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
 
     // Cards are position: fixed so they stay on the viewport.
     // z-index increases with index so incoming cards cover previous ones.
-    // Non-first cards start off-screen to prevent a flash before GSAP initializes.
     const cardStyle: React.CSSProperties = {
       position: "fixed",
       top: 0,
@@ -57,7 +56,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       overflow: "hidden",
       zIndex: index + 1,
       willChange: "transform",
-      ...(index > 0 && { transform: "translateY(110vh) rotate(45deg)" }),
     };
 
     const innerContent = CursorEffect ? (
