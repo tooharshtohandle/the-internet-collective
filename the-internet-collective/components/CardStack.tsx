@@ -6,6 +6,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cards } from "@/data/card";
 import Card from "./Card";
 
+interface CardStackProps {
+  footerRef: React.RefObject<HTMLElement | null>;
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Animation constants ─────────────────────────────────────
@@ -22,7 +26,7 @@ const ANIMATE_VH = 100; // viewport-heights of scroll to animate a card in
 const DWELL_VH = 20; // viewport-heights of "rest" before next card starts
 const SECTION_VH = ANIMATE_VH + DWELL_VH; // total per card
 
-export default function CardStack() {
+export default function CardStack({ footerRef }: CardStackProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -85,7 +89,7 @@ export default function CardStack() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [footerRef]);
 
   // Container height:
   // Total scroll needed for all animations + 100vh for the viewport itself.

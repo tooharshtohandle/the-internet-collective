@@ -1,15 +1,23 @@
 "use client";
 
-export default function Footer() {
+import { forwardRef } from "react";
+
+const Footer = forwardRef<HTMLElement>((_, ref) => {
   return (
     <footer
+      ref={ref}
       style={{
-        position: "relative",
-        width: "100%",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
         backgroundColor: "var(--color-footer-bg)",
         color: "var(--color-footer-text)",
         padding: "6rem 3rem",
         zIndex: 0,
+        display: "flex",
+        alignItems: "flex-end",
       }}
     >
       <div
@@ -108,4 +116,7 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+});
+
+Footer.displayName = "Footer";
+export default Footer;
