@@ -6,6 +6,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cards } from "@/data/card";
 import Card from "./Card";
 
+interface CardStackProps {
+  footerRef: React.RefObject<HTMLElement | null>;
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Animation constants ─────────────────────────────────────
@@ -22,7 +26,7 @@ const ANIMATE_VH = 100; // viewport-heights of scroll to animate a card in
 const DWELL_VH = 20; // viewport-heights of "rest" before next card starts
 const SECTION_VH = ANIMATE_VH + DWELL_VH; // total per card
 
-export default function CardStack() {
+export default function CardStack({ footerRef }: CardStackProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -72,18 +76,32 @@ export default function CardStack() {
         const scrollStart = (index - 1) * SECTION_VH * (vh / 100);
 
         if (isLast) {
+          const lastCardTrigger = {
+            trigger: containerRef.current,
+            start: `top+=${scrollStart} top`,
+            end: `+=${vh * 0.6}`,
+            scrub,
+          };
+
           // Last card: shorter scroll budget, stays partially rotated
           gsap.to(cardEl, {
             y: "-20vh",
             rotation: -8,
             ease: "none",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: `top+=${scrollStart} top`,
-              end: `+=${vh * 0.6}`,
-              scrub,
-            },
+            scrollTrigger: lastCardTrigger,
           });
+
+          // Bring footer above all other cards (but below the last card)
+          if (footerRef.current) {
+            const footerEl = footerRef.current;
+            ScrollTrigger.create({
+              trigger: lastCardTrigger.trigger,
+              start: lastCardTrigger.start,
+              end: lastCardTrigger.end,
+              onEnter: () => { footerEl.style.zIndex = String(total - 1); },
+              onLeaveBack: () => { footerEl.style.zIndex = "0"; },
+            });
+          }
         } else {
           // Normal cards: animate from off-screen+rotated to flush
           gsap.to(cardEl, {
@@ -102,7 +120,7 @@ export default function CardStack() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [footerRef]);
 
   // Container height:
   // (n-1) sections × SECTION_VH + 60vh for the last card partial
