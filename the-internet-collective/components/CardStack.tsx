@@ -45,8 +45,6 @@ export default function CardStack() {
       const vh = window.innerHeight;
 
       cardElements.forEach((cardEl, index) => {
-        const isLast = index === total - 1;
-
         if (index === 0) {
           // First card: visible from the start, no animation
           gsap.set(cardEl, { y: 0, rotation: 0 });
@@ -71,33 +69,18 @@ export default function CardStack() {
         // Card 1 starts after card 0's dwell, card 2 after card 1's dwell, etc.
         const scrollStart = (index - 1) * SECTION_VH * (vh / 100);
 
-        if (isLast) {
-          // Last card: shorter scroll budget, stays partially rotated
-          gsap.to(cardEl, {
-            y: "-20vh",
-            rotation: -8,
-            ease: "none",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: `top+=${scrollStart} top`,
-              end: `+=${vh * 0.6}`,
-              scrub,
-            },
-          });
-        } else {
-          // Normal cards: animate from off-screen+rotated to flush
-          gsap.to(cardEl, {
-            y: 0,
-            rotation: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: `top+=${scrollStart} top`,
-              end: `+=${vh * (ANIMATE_VH / 100)}`,
-              scrub,
-            },
-          });
-        }
+        // All cards (including last): animate from off-screen+rotated to flush
+        gsap.to(cardEl, {
+          y: 0,
+          rotation: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: `top+=${scrollStart} top`,
+            end: `+=${vh * (ANIMATE_VH / 100)}`,
+            scrub,
+          },
+        });
       });
     }, containerRef);
 
@@ -105,10 +88,11 @@ export default function CardStack() {
   }, []);
 
   // Container height:
-  // (n-1) sections × SECTION_VH + 60vh for the last card partial
+  // Total scroll needed for all animations + 100vh for the viewport itself.
+  // Max scrollable distance = containerHeight - 100vh, so we add 100vh.
   const containerHeight =
     cards.length > 1
-      ? `${(cards.length - 1) * SECTION_VH + 60}vh`
+      ? `${(cards.length - 2) * SECTION_VH + ANIMATE_VH + 100}vh`
       : "100vh";
 
   return (
